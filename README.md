@@ -1,238 +1,171 @@
 # Stagium
 
-## Smart Internship & Career Management Platform
+**Stagium** est une plateforme SaaS moderne et intelligente de gestion des stages académiques et d’insertion professionnelle étudiante. Le MVP connecte étudiants, entreprises et administrateurs autour d’un workflow sécurisé : profils professionnels, offres de stage, candidatures, dashboards, notifications et recommandations intelligentes.
 
-Stagium is a modern AI-powered platform designed to simplify internship management and improve student professional integration.
+## Vision produit
 
-The platform connects students, companies, and academic institutions through intelligent matching, streamlined applications, modern dashboards, and smart career tools.
+Stagium n’est pas un simple CRUD académique. L’objectif est de proposer une base crédible pour une soutenance professionnelle, un portfolio haut niveau et une évolution startup EdTech/HRTech :
 
----
+- expérience premium inspirée de LinkedIn, Notion, Linear, Vercel et Stripe Dashboard ;
+- architecture API-first, modulaire, maintenable et scalable ;
+- scoring étudiant ↔ stage explicable, prêt à évoluer vers IA avancée ;
+- sécurité SaaS : JWT, refresh tokens, RBAC, validation stricte, rate limiting et headers sécurité ;
+- déploiement local reproductible via Docker Compose.
 
-# Vision
+## Stack technique
 
-Stagium aims to modernize academic internship management in Africa and beyond by creating a scalable digital ecosystem for students, universities, and recruiters.
+### Frontend
 
-The platform goes beyond traditional internship management by integrating:
-- smart recommendations,
-- career tools,
-- analytics,
-- digital workflows,
-- and future AI-powered recruitment features.
+- Next.js 15, React 19, TypeScript strict
+- Tailwind CSS, composants style shadcn/ui, Framer Motion
+- React Hook Form, Zod
+- TanStack Query, Zustand, Axios
 
----
+### Backend
 
-# Core Features
+- Laravel 12 API
+- Clean Architecture légère par modules métier
+- Controller → Service → Repository → DTO
+- REST API versionnée `/api/v1`
+- JWT Auth, RBAC, email verification-ready, refresh-token storage
 
-## Student Features
-- Professional student profile
-- Smart internship recommendations
-- Internship applications
-- CV upload and generation
-- Portfolio management
-- Application tracking
-- Notifications and alerts
+### Base de données
 
-## Company Features
-- Company profiles
-- Internship publishing
-- Candidate management
-- Recruitment dashboard
-- Student evaluation
+- PostgreSQL 16
+- UUID, indexes, contraintes relationnelles
+- JSONB pour profils évolutifs, tags, payloads de notifications
 
-## Academic Features
-- Internship supervision
-- Internship validation
-- Internship tracking
-- Reports and analytics
+## Structure du projet
 
-## Admin Features
-- User management
-- Platform analytics
-- Moderation tools
-- System monitoring
-
----
-
-# Tech Stack
-
-## Frontend
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- Shadcn/ui
-- Framer Motion
-
-## Backend
-- NestJS / Laravel API
-- JWT Authentication
-- REST API
-
-## Database
-- PostgreSQL
-
-## DevOps
-- Docker
-- Docker Compose
-
----
-
-# Architecture
-
-Stagium follows a scalable modern architecture based on:
-- Clean Architecture
-- Modular Design
-- SOLID Principles
-- Reusable Components
-- API-First Development
-
----
-
-# Project Goals
-
-- Simplify internship management
-- Improve student employability
-- Modernize academic workflows
-- Connect talent with opportunities
-- Build a scalable EdTech & HRTech ecosystem
-
----
-
-# MVP Scope
-
-The MVP includes:
-- Authentication system
-- Student dashboards
-- Company dashboards
-- Internship management
-- Application tracking
-- Smart matching foundation
-- Notification system
-
----
-
-# Future Roadmap
-
-- AI-powered recommendations
-- ATS CV optimization
-- Mobile application
-- Real-time messaging
-- Skill assessments
-- Career analytics
-- AI career assistant
-
----
-
-# Installation
-
-## Clone repository
-
-```bash
-git clone https://github.com/your-username/stagium.git
+```txt
+frontend/                 # Application Next.js 15
+  app/                    # App Router : public, auth, dashboards par rôle
+  components/             # Layout, brand system, sections, UI réutilisable
+  features/               # Modules frontend métier
+  services/               # Axios API client
+  hooks/                  # TanStack Query hooks
+  stores/                 # Zustand stores
+  validators/             # Zod schemas
+backend/                  # API Laravel 12
+  app/Modules/            # Auth, Students, Companies, Internships, Applications, Matching, Notifications, Admin
+  app/Support/            # Réponses API uniformes
+  database/migrations/    # Schéma PostgreSQL
+  routes/api.php          # API v1
+docs/architecture.md      # Décisions techniques et ERD
+docker-compose.yml        # Frontend + API + PostgreSQL
 ```
 
-## Frontend
+## Pages incluses
+
+### Public
+
+- Landing page startup premium
+- Login
+- Register étudiant/entreprise
+- Liste des offres
+- Détail offre
+- Entreprises partenaires
+
+### Étudiant
+
+- Dashboard étudiant
+- Profil mini-LinkedIn
+- Candidatures
+- Recommandations
+- Paramètres
+
+### Entreprise
+
+- Dashboard entreprise
+- Offres
+- Candidats
+- Paramètres
+
+### Admin
+
+- Dashboard admin
+- Utilisateurs
+- Analytics
+- Modération
+
+## API MVP
+
+| Méthode | Endpoint | Description |
+|---|---|---|
+| POST | `/api/v1/auth/register` | Inscription étudiant ou entreprise |
+| POST | `/api/v1/auth/login` | Connexion JWT |
+| GET | `/api/v1/auth/me` | Session courante |
+| POST | `/api/v1/auth/logout` | Logout |
+| POST | `/api/v1/auth/refresh` | Renouvellement token |
+| GET | `/api/v1/internships` | Recherche paginée et filtrée |
+| POST | `/api/v1/internships` | Publication d’offre entreprise |
+| GET | `/api/v1/applications` | Candidatures étudiant |
+| POST | `/api/v1/internships/{id}/applications` | Postuler |
+| GET | `/api/v1/recommendations` | Recommandations matchées |
+| GET | `/api/v1/admin/analytics` | Analytics admin |
+
+## Identité visuelle
+
+Le logo source attendu est `docs/stagium-logo.png`. Le frontend synchronise automatiquement cet asset vers `frontend/public/brand/stagium-logo.png` via `npm run sync:brand`, exécuté avant `npm run dev` et `npm run build`. Si le fichier source est absent, le composant `BrandLogo` conserve un fallback accessible afin d’éviter une navigation cassée pendant le développement.
+
+## Lancement local
+
+### Avec Docker
+
+```bash
+docker compose up --build
+```
+
+- Frontend : <http://localhost:3000>
+- API : <http://localhost:8000/api/v1>
+- PostgreSQL : `localhost:5432`
+
+### Frontend seul
 
 ```bash
 cd frontend
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-## Backend
+### Backend seul
 
 ```bash
 cd backend
-npm install
-npm run start:dev
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan jwt:secret
+php artisan migrate --seed
+php artisan serve
 ```
 
----
+## Matching intelligent MVP
 
-# Environment Variables
+Le moteur actuel calcule un score pondéré entre :
 
-Create a `.env` file for both frontend and backend.
+- compétences étudiant ↔ tags offre ;
+- domaine préféré ;
+- villes préférées ;
+- mode préféré : remote, hybride ou présentiel.
 
-Example:
+Le service est volontairement isolé dans `backend/app/Modules/Matching/Services/MatchingService.php` pour permettre une future évolution vers parsing CV, embeddings vectoriels, LLM career assistant, scoring ATS et recommandations personnalisées.
 
-```env
-DATABASE_URL=
-JWT_SECRET=
-NEXT_PUBLIC_API_URL=
-```
+## Sécurité
 
----
+- Validation stricte côté frontend avec Zod et côté backend avec DTO rules Laravel
+- JWT + refresh-token table
+- RBAC par rôles `student`, `company`, `admin`
+- Rate limiting API
+- Headers sécurité
+- Hash de mot de passe Laravel
+- Upload documents limité aux formats bureautiques attendus
 
-# Project Structure
+## Documentation
 
-```txt
-frontend/
-backend/
-docs/
-docker/
-```
+Consultez [`docs/architecture.md`](docs/architecture.md) pour le diagramme relationnel, les décisions d’architecture et la segmentation des modules.
 
----
+## Auteur
 
-# UI/UX Philosophy
-
-Stagium focuses on:
-- clean interfaces,
-- accessibility,
-- responsiveness,
-- premium SaaS experience,
-- modern animations,
-- and user-centered workflows.
-
----
-
-# Security
-
-- JWT Authentication
-- Role-Based Access Control
-- Secure password hashing
-- API validation
-- Rate limiting
-- Secure environment variables
-
----
-
-# Contributing
-
-Contributions, ideas, and feedback are welcome.
-
----
-
-# License
-
-MIT License
-
----
-
-# Author
-
-Bryan Seidy  
-Software Engineering Student & Fullstack Developer
-
----
-
-# Stagium
-
-> Connecting Talent to Opportunity.
-
-stagium/
-│
-├── frontend/
-├── backend/
-├── docs/
-├── docker/
-├── .github/
-├── README.md
-├── LICENSE
-└── .gitignore
-
-
-![Next.js](https://img.shields.io/badge/Next.js-15-black)
-![NestJS](https://img.shields.io/badge/NestJS-red)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+Bryan Seidy — Software Engineering Student & Fullstack Developer

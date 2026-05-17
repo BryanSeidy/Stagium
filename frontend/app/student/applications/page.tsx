@@ -1,0 +1,4 @@
+import { DashboardShell } from "@/components/layout/dashboard-shell";
+import { applications } from "@/features/internships/data";
+const nav = [{ href: "/student/dashboard", label: "Dashboard" }, { href: "/student/profile", label: "Profil" }, { href: "/student/applications", label: "Candidatures" }, { href: "/student/recommendations", label: "Recommandations" }, { href: "/student/settings", label: "Paramètres" }];
+export default function ApplicationsPage() { return <DashboardShell title="Mes candidatures" nav={nav}><div className="grid gap-4">{applications.map((app) => <article key={app.id} className="rounded-[2rem] border bg-white p-6"><h2 className="font-black">{app.internship.title}</h2><p className="text-sm text-slate-500">{app.internship.company} · statut {app.status}</p></article>)}</div></DashboardShell>; }
