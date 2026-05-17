@@ -1,0 +1,8 @@
+import { DashboardShell } from "@/components/layout/dashboard-shell";
+import { applications, internships, metrics } from "@/features/internships/data";
+import { InternshipCard } from "@/features/internships/internship-card";
+import { MetricCard } from "@/features/dashboard/metric-card";
+import { MatchPanel } from "@/features/matching/match-panel";
+import { NotificationList } from "@/features/notifications/notification-list";
+const nav = [{ href: "/student/dashboard", label: "Dashboard" }, { href: "/student/profile", label: "Profil" }, { href: "/student/applications", label: "Candidatures" }, { href: "/student/recommendations", label: "Recommandations" }, { href: "/student/settings", label: "Paramètres" }];
+export default function StudentDashboard() { return <DashboardShell title="Dashboard étudiant" nav={nav}><div className="grid gap-5 md:grid-cols-4">{metrics.map((metric) => <MetricCard key={metric.label} metric={metric} />)}</div><div className="mt-6 grid gap-6 xl:grid-cols-[1fr_360px]"><section className="grid gap-5 md:grid-cols-2">{internships.slice(0,2).map((i) => <InternshipCard key={i.id} internship={i} />)}</section><aside className="grid gap-6"><MatchPanel /><NotificationList /></aside></div><div className="mt-6 rounded-[2rem] border bg-white p-6"><h2 className="text-xl font-black">Suivi candidatures</h2>{applications.map((app) => <div key={app.id} className="mt-4 flex items-center justify-between rounded-2xl bg-slate-50 p-4"><span className="font-semibold">{app.internship.title}</span><span className="rounded-full bg-white px-3 py-1 text-xs font-bold uppercase">{app.status}</span></div>)}</div></DashboardShell>; }
