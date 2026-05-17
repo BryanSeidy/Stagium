@@ -91,7 +91,7 @@ docker-compose.yml        # Frontend + API + PostgreSQL
 ## API MVP
 
 | Méthode | Endpoint | Description |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/api/v1/auth/register` | Inscription étudiant ou entreprise |
 | POST | `/api/v1/auth/login` | Connexion JWT |
 | GET | `/api/v1/auth/me` | Session courante |
@@ -165,3 +165,5 @@ Consultez [`docs/architecture.md`](docs/architecture.md) pour le diagramme relat
 ## Auteur
 
 Bryan Seidy — Software Engineering Student & Fullstack Developer
+
+jwt-auth secret : XdLrUWBqzxa8u3wKulsfhAUvf7AOj9I5tE6FgW3rV0co537Hs17K3xDiPoDjez6G
