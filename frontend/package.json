@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sync:brand": "node scripts/sync-brand-assets.mjs",
+    "predev": "npm run sync:brand",
+    "prebuild": "npm run sync:brand"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
